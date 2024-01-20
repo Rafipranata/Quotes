@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+    <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <title>Rafi Quotes</title>
+    <style>
+
+    #result {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: 90vh;
+    }
+
+    #activity {
+        font-size: 24px;
+        color: #333;
+        font-weight: 800;
+    }
+
+    #type {
+        font-size: 20px;
+        padding: 8px 16px;
+        color: #E9F6FF;;
+        background-color: #FE7A36;
+        font-style: italic;
+        border-radius: 2px;
+        display: none;
+    }
+
+
+
+    </style>
+</head>
+<body>
+    <ons-page >
+        <ons-toolbar>
+            <div class="left" style="margin-left: 10px; color: #FE7A36; font-size: 20px;">
+                Rafi <span style="color: #280274;">Quotes</span>
+            </div>
+
+            <div class="right">
+                <ons-toolbar-button>
+                    <a download id="screenshot" style="font-size: 25px;">📷</a>
+                </ons-toolbar-button>
+            </div>
+        </ons-toolbar>
+
+        <div id="result">
+            
+            <h2 id="activity"></h2>
+            
+            <p id="type"></p>
+
+        </div>
+        
+        <ons-fab position="bottom right" onclick="newQuotes()">
+            <ons-icon icon="md-plus"></ons-icon>
+        </ons-fab>
+    </ons-page>
+    <script>
+        async function newQuotes(){
+            const result = document.getElementById("result")
+            const activity = document.getElementById("activity")
+            const type = document.getElementById("type")
+            const screenshoot = document.getElementById("screenshot")
+
+
+            const url = "https://www.boredapi.com/api/activity/"
+            const response = await fetch(url)
+            const api = await response.json()
+
+            activity.textContent = api.activity
+            type.textContent = api.type
+            type.style.display = "block"
+
+            let count = 0
+
+            screenshoot.addEventListener("click", function(){
+                if (count) return window.location.reload();
+
+                html2canvas(result).then((callback) => {
+                    screenshoot.setAttribute("href", callback.toDataURL("image/png"))
+                    screenshoot.textContent = "📥"
+                    count = 1
+                })
+            })
+            
+        }
+    </script>
+</body>
+</html>
